@@ -36,7 +36,8 @@ cd <project-folder>
 
 ## 2. Start the project
 
-Make sure Docker Desktop is installed and running.
+**MAKE SURE DOCKER DESKTOP IS INSTALLED AND RUNNING.**
+Open the docker desktop on your computer and the run the next command on your terminal
 
 Then run:
 
@@ -57,8 +58,6 @@ You do not need to install Node.js or PostgreSQL separately when using Docker.
 ## 3. Open the application
 
 Once Docker finishes starting the containers, open:
-
-### Player Application
 
 ```text
 http://localhost:5173

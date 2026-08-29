@@ -7,7 +7,6 @@ interface Props {
   userId: string | null;
   onSelect: (id: string) => void;
   onCreated: () => void;
-  /** Called after a user is deleted, so the page can clear what it was showing. */
   onDeleted: () => void;
 }
 

@@ -9,11 +9,6 @@ const LABELS: Record<string, string> = {
   COMPLETED: "Completed module",
 };
 
-/**
- * The complete history, never trimmed. Events on the far side of a checkpoint are
- * dimmed and chipped rather than hidden - that visible difference between
- * "history" and "live context" is what the checkpoint rule actually means.
- */
 export function HistoryPanel({ events }: { events: HistoryEvent[] }) {
   const archived = events.filter((e) => !e.isLiveContext).length;
 
@@ -55,3 +50,4 @@ export function HistoryPanel({ events }: { events: HistoryEvent[] }) {
     </div>
   );
 }
+ 

@@ -1,14 +1,3 @@
-// Conversation flow data model.
-//
-// The model is split into three concerns, and keeping them apart is the whole design:
-//
-//   CONTENT  Module / Question / Option  — what the flow looks like (authored)
-//   HISTORY  ConversationEvent           — append-only, never updated or deleted
-//   STATE    User / UserModuleState      — a small mutable pointer into the flow
-//
-// Checkpoints do not erase anything. They move a watermark (contextResetSeq) over
-// the history so that older events stop counting as live context.
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,20 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ---------------------------------------------------------------- content
-
 model Module {
   id    String @id @default(cuid())
   key   String @unique
   title String
-
-  // Where `start` lands. Nullable so a module can be created before its questions.
   entryQuestionId String?   @unique
   entryQuestion   Question? @relation("ModuleEntry", fields: [entryQuestionId], references: [id], onDelete: SetNull)
-
   questions Question[]        @relation("ModuleQuestions")
   states    UserModuleState[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -41,20 +24,13 @@ model Question {
   moduleId     String
   module       Module  @relation("ModuleQuestions", fields: [moduleId], references: [id], onDelete: Cascade)
   text         String
-  // A checkpoint resets the module's live context when the user lands on it.
   isCheckpoint Boolean @default(false)
-
   options  Option[] @relation("QuestionOptions")
-  // Options elsewhere in the graph that point AT this question. Declared so the
-  // admin API can answer "what breaks if I delete this?" before it breaks.
   incoming Option[] @relation("OptionTarget")
-
   entryOf Module?           @relation("ModuleEntry")
   states  UserModuleState[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   @@index([moduleId])
 }
 
@@ -64,22 +40,14 @@ model Option {
   question   Question @relation("QuestionOptions", fields: [questionId], references: [id], onDelete: Cascade)
   label      String
   order      Int      @default(0)
-
-  // null = this option ends the module. A target in another module is a module
-  // switch and needs no extra modelling: the target simply has a different moduleId.
-  // Restrict, so an admin cannot silently create a dangling reference by deleting
-  // the target; the API reports "N options point here" instead.
   nextQuestionId String?
   nextQuestion   Question? @relation("OptionTarget", fields: [nextQuestionId], references: [id], onDelete: Restrict)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   @@index([questionId])
   @@index([nextQuestionId])
 }
 
-// ---------------------------------------------------------------- history
 
 enum EventKind {
   PRESENTED
@@ -90,45 +58,29 @@ enum EventKind {
   COMPLETED
 }
 
-// Append-only. Nothing in the codebase updates or deletes a row here.
 model ConversationEvent {
   id     String @id @default(cuid())
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Per-user monotonic sequence. Allocated as max(seq)+1 inside the same
-  // transaction as the write, so it is gapless and totally orders the history.
   seq Int
-
   kind       EventKind
   moduleId   String
   questionId String
   optionId   String?
-
-  // Snapshots, not joins: history stays readable after content is edited or deleted.
   moduleTitle  String
   questionText String
   optionLabel  String?
-
   createdAt DateTime @default(now())
-
   @@unique([userId, seq])
   @@index([userId, moduleId, seq])
 }
 
-// ---------------------------------------------------------------- state
-
 model User {
   id   String @id @default(cuid())
   name String
-
-  // Which module the user is "in" right now. Denormalised for cheap reads;
-  // the per-module truth lives in UserModuleState.
   currentModuleId String?
-
   states UserModuleState[]
   events ConversationEvent[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -138,19 +90,11 @@ model UserModuleState {
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   moduleId String
   module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-
-  // null = the user is not currently parked on a question in this module
-  // (finished it, or left it via a module switch).
   currentQuestionId String?
   currentQuestion   Question? @relation(fields: [currentQuestionId], references: [id], onDelete: SetNull)
-
-  // The checkpoint watermark. Only events with seq > contextResetSeq are live
-  // context for this module; everything at or below it is history only.
   contextResetSeq Int @default(0)
-
   completedAt DateTime?
   startedAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-
   @@id([userId, moduleId])
 }

@@ -1,9 +1,5 @@
 import type { FlowIssue } from "../../api/client";
 
-/**
- * The engine copes with a broken flow at runtime; this shows the author the
- * breakage before a user walks into it.
- */
 export function ValidationPanel({ ok, issues }: { ok: boolean; issues: FlowIssue[] }) {
   return (
     <div className="validation">

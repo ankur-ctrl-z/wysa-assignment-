@@ -2,7 +2,6 @@ import type { QuestionView } from "../api/client";
 
 interface Props {
   question: QuestionView;
-  /** Live answers in this module since the last checkpoint, plus one. */
   step: number;
   busy: boolean;
   onAnswer: (optionId: string) => void;
@@ -11,8 +10,6 @@ interface Props {
 export function QuestionCard({ question, step, busy, onAnswer }: Props) {
   return (
     <>
-      {/* A step number, not "3 of 8": the flow is a branching graph, so paths
-          through a module differ in length and there is no honest denominator. */}
       <div className="stepline">
         <span className="step">Step {step}</span>
         <span>·</span>

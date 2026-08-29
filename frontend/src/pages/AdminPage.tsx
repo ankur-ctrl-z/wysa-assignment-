@@ -4,11 +4,6 @@ import { QuestionEditor } from "../components/admin/QuestionEditor";
 import type { QuestionTarget } from "../components/admin/OptionEditor";
 import { ValidationPanel } from "../components/admin/ValidationPanel";
 
-/**
- * Flow authoring. Every option's target is chosen from every question in the
- * system, which is how a cross-module jump gets created - there is no separate
- * "switch module" concept to configure.
- */
 export function AdminPage() {
   const [modules, setModules] = useState<ModuleSummary[]>([]);
   const [graphs, setGraphs] = useState<ModuleGraph[]>([]);
@@ -39,7 +34,6 @@ export function AdminPage() {
 
   const graph = graphs.find((g) => g.key === selected) ?? null;
 
-  // Every question in the system, so any option can point anywhere.
   const targets: QuestionTarget[] = graphs.flatMap((g) =>
     g.questions.map((q) => ({
       id: q.id,
@@ -56,9 +50,6 @@ export function AdminPage() {
       })
       .catch((err: Error) => setError(err.message));
 
-  // NOTE: the editor column comes FIRST in the DOM. `.layout` is a
-  // `1fr | 390px` grid, so rendering the sidebar first put the narrow module list
-  // in the wide column and squeezed the question editor into 390px.
   return (
     <div className="layout">
       <div>
@@ -107,8 +98,6 @@ export function AdminPage() {
       </div>
 
       <aside>
-        {/* The form sits above the list: creating a module is the action, the
-            list below is the result of it. */}
         <div className="panel">
           <h3>New module</h3>
           <div className="stack">

@@ -6,11 +6,7 @@ interface Props {
   busy: boolean;
   onStart: (key: string, restart: boolean) => void;
 }
-
-/**
- * Also the per-module state read-out: where the user stands in every module they
- * have touched, which is the other half of "state vs history".
- */
+ 
 export function ModuleList({ modules, state, busy, onStart }: Props) {
   const byKey = new Map((state?.modules ?? []).map((m) => [m.moduleKey, m]));
 

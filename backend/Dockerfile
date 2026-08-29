@@ -1,4 +1,3 @@
-# ---- build ----------------------------------------------------------------
 FROM node:22-alpine AS build
 WORKDIR /app
 
@@ -11,8 +10,6 @@ RUN npx prisma generate
 COPY tsconfig.json ./
 COPY src ./src
 RUN npm run build
-
-# ---- runtime --------------------------------------------------------------
 FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production
@@ -26,6 +23,4 @@ COPY --from=build /app/dist ./dist
 COPY prisma ./prisma
 
 EXPOSE 3000
-# Migrate and seed on boot so `docker compose up` gives a working system in one step.
-# The seed is a no-op when modules already exist.
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/seed.js; node dist/server.js"]

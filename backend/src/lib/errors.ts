@@ -1,12 +1,6 @@
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 import { ZodError } from "zod";
 
-/**
- * Every failure the API can produce has a stable machine-readable code.
- * Clients branch on `code`, humans read `message`, and `context` carries whatever
- * the client needs to recover — most importantly, the question it should show
- * instead when the one it asked for is stale.
- */
 export type ErrorCode =
   | "VALIDATION_ERROR"
   | "USER_NOT_FOUND"
@@ -43,13 +37,12 @@ export class ApiError extends Error {
     return new ApiError(code, 400, message, context);
   }
 
-  /** 409: the request was well-formed but the user's state has moved on. */
+
   static conflict(code: ErrorCode, message: string, context: Record<string, unknown> = {}) {
     return new ApiError(code, 409, message, context);
   }
 }
 
-/** Express 4 does not catch rejected promises; this does. */
 export const asyncHandler =
   (fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>): RequestHandler =>
   (req, res, next) => {
@@ -57,8 +50,6 @@ export const asyncHandler =
   };
 
 export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
-  // Handlers validate with schema.parse(); the resulting ZodError lands here so
-  // every trust-boundary rejection looks like every other API error.
   if (err instanceof ZodError) {
     res.status(400).json({
       error: {
@@ -75,8 +66,6 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
     return;
   }
 
-  // Prisma unique-constraint violations are the only DB error worth translating;
-  // everything else is a bug and should look like one in the logs.
   const code = (err as { code?: string } | null)?.code;
   if (code === "P2002") {
     res.status(409).json({ error: { code: "CONFLICT", message: "That record already exists." } });

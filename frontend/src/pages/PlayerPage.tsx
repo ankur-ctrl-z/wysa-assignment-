@@ -38,7 +38,6 @@ export function PlayerPage() {
     setHistory(await flowApi.history(id));
   }, []);
 
-  /** Keeps the URL a shareable deep link to whatever question is on screen. */
   const syncUrl = useCallback(
     (question: QuestionView | null) => {
       if (!userId) return;
@@ -49,8 +48,6 @@ export function PlayerPage() {
     [userId, setParams],
   );
 
-  // Entry point for every load, including a pasted deep link. The API decides
-  // what is still valid; the UI only reports what it decided.
   useEffect(() => {
     if (!userId) {
       setFlow(null);
@@ -77,12 +74,8 @@ export function PlayerPage() {
     return () => {
       cancelled = true;
     };
-    // Deliberately keyed on the user only: re-running on every questionId change
-    // would fight with syncUrl. Deep links are handled on load and on paste.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  /** Wraps a flow mutation with the shared busy / notice / refresh handling. */
   const act = async (run: () => Promise<FlowResponse>, onReason?: (reason: string) => Notice) => {
     if (!userId) return;
     setBusy(true);
@@ -95,8 +88,6 @@ export function PlayerPage() {
     } catch (err) {
       if (err instanceof ApiError) {
         setNotice({ tone: "warn", text: err.message, code: err.code });
-        // The API hands back the live question on a stale request, so the UI can
-        // put the user back on their feet instead of showing a dead end.
         const recovered = err.context.currentQuestion as QuestionView | undefined;
         if (recovered && flow) setFlow({ ...flow, question: recovered });
         await refreshHistory(userId);
@@ -137,7 +128,6 @@ export function PlayerPage() {
     );
   };
 
-  /** Answers given in the current module since its last checkpoint, plus one. */
   const step =
     1 +
     history.filter(
@@ -209,10 +199,6 @@ export function PlayerPage() {
   );
 }
 
-/**
- * Simulates arriving from an old notification: paste any question id (copy one
- * from a question card) and see what the backend decides to serve.
- */
 function DeepLinkBox({ onOpen }: { onOpen: (questionId: string) => void }) {
   const [value, setValue] = useState("");
   return (

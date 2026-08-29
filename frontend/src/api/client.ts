@@ -1,9 +1,3 @@
-/**
- * One thin fetch wrapper. Every backend failure arrives as
- * `{ error: { code, message, ...context } }`, so it is turned into a typed
- * ApiError here and nothing downstream has to inspect response bodies.
- */
-
 const BASE = "/api";
 
 export class ApiError extends Error {
@@ -40,9 +34,6 @@ export const api = {
   patch: <T>(path: string, body: unknown) => request<T>("PATCH", path, body),
   del: (path: string) => request<void>("DELETE", path),
 };
-
-// ---------------------------------------------------------------- types
-// Mirrors of the backend view shapes.
 
 export interface User {
   id: string;
@@ -149,12 +140,11 @@ export interface FlowIssue {
   optionId?: string;
 }
 
-// ---------------------------------------------------------------- endpoints
 
 export const flowApi = {
   users: () => api.get<{ users: User[] }>("/users").then((r) => r.users),
   createUser: (name: string) => api.post<User>("/users", { name }),
-  /** Cascades: the user's conversation history and module state go with them. */
+
   deleteUser: (id: string) => api.del(`/users/${id}`),
   modules: () => api.get<{ modules: ModuleSummary[] }>("/modules").then((r) => r.modules),
   state: (userId: string) => api.get<StateView>(`/flow/${userId}/state`),

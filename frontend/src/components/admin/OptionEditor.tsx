@@ -31,9 +31,6 @@ export function OptionEditor({ option, targets, currentModuleKey, onChanged }: P
         onChange={(e) => setLabel(e.target.value)}
         onBlur={() => label !== option.label && void save({ label })}
       />
-
-      {/* Grouped by module: with ~50 questions in the system a flat list is
-          unusable, and a native optgroup beats pulling in a combobox. */}
       <select
         value={option.nextQuestionId ?? ""}
         onChange={(e) => void save({ nextQuestionId: e.target.value || null })}

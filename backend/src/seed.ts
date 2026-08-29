@@ -1,37 +1,9 @@
-/**
- * Seed data - six modules of a pet-care conversation, deliberately awkward.
- *
- * It is written as one declarative FLOW array so the shape of the conversation is
- * readable at a glance and editable without touching any logic. Refs ("p1", "t7")
- * are seed-local names; a cross-module link is just a ref belonging to another
- * module, exactly as the data model intends - there is no "switch module" concept
- * to configure.
- *
- * The content is shaped to exercise every case the assignment asks about:
- *   - 50 questions across 6 modules, chains up to 9 questions deep
- *   - symptom-triage forks on severity into a long urgent path and a short one
- *   - 8 checkpoints (p6, p9, t7, t10, a7, n7, m7, s7)
- *   - loops back across a checkpoint (p6 -> p2, t7 -> t1, a7 -> a2, n7 -> n2,
- *     m7 -> m1, s7 -> s1) - this is what makes the watermark observable
- *   - 15 cross-module jumps, so switching modules repeatedly and returning to a
- *     previously visited module are both reachable by clicking:
- *
- *       intake      -> support, nutrition, meds, appointment
- *       triage      -> appointment, support, nutrition
- *       appointment -> triage, meds, support
- *       nutrition   -> support
- *       meds        -> triage, appointment
- *       support     -> triage, appointment, intake
- *
- *   - terminal options (next: null) in every module
- */
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 interface SeedOption {
   label: string;
-  /** ref of the next question, or null to end the module. */
   next: string | null;
 }
 
@@ -50,7 +22,6 @@ interface SeedModule {
 }
 
 const FLOW: SeedModule[] = [
-  // ---------------------------------------------------------------- 1 of 6
   {
     key: "new-pet-intake",
     title: "New Pet Intake",
@@ -140,8 +111,6 @@ const FLOW: SeedModule[] = [
       },
     ],
   },
-
-  // ---------------------------------------------------------------- 2 of 6
   {
     key: "symptom-triage",
     title: "Symptom Triage",
@@ -240,8 +209,6 @@ const FLOW: SeedModule[] = [
       },
     ],
   },
-
-  // ---------------------------------------------------------------- 3 of 6
   {
     key: "appointment",
     title: "Book an Appointment",
@@ -323,8 +290,6 @@ const FLOW: SeedModule[] = [
       },
     ],
   },
-
-  // ---------------------------------------------------------------- 4 of 6
   {
     key: "nutrition-plan",
     title: "Nutrition Plan",
@@ -405,8 +370,6 @@ const FLOW: SeedModule[] = [
       },
     ],
   },
-
-  // ---------------------------------------------------------------- 5 of 6
   {
     key: "meds-vaccines",
     title: "Medication & Vaccines",
@@ -476,8 +439,6 @@ const FLOW: SeedModule[] = [
       },
     ],
   },
-
-  // ---------------------------------------------------------------- 6 of 6
   {
     key: "support",
     title: "Support",
@@ -565,8 +526,6 @@ async function main() {
     console.log("Modules already exist - skipping seed. Use `npm run seed -- --force` to replace.");
     return;
   }
-
-  // Pass 1: modules and questions, so every ref exists before anything links to it.
   const ids = new Map<string, string>();
   const modules = new Map<string, string>();
 
@@ -581,7 +540,6 @@ async function main() {
     }
   }
 
-  // Pass 2: options (including cross-module targets) and entry pointers.
   for (const mod of FLOW) {
     for (const q of mod.questions) {
       await prisma.option.createMany({
@@ -607,7 +565,6 @@ async function main() {
 }
 
 async function reset() {
-  // Order matters: options reference questions, modules reference an entry question.
   await prisma.conversationEvent.deleteMany();
   await prisma.userModuleState.deleteMany();
   await prisma.module.updateMany({ data: { entryQuestionId: null } });

@@ -1,6 +1,4 @@
 :root {
-  /* Light product UI. Surfaces are white on a soft grey page, so cards read as
-     objects rather than as boxes drawn with borders. */
   --bg: #f5f6f8;
   --surface: #ffffff;
   --surface-2: #fafbfc;
@@ -14,9 +12,6 @@
   --accent: #2f6fed;
   --accent-soft: #eaf1fe;
   --accent-line: #b9d1fb;
-
-  /* Semantic colours that carry meaning in this app, not decoration:
-     amber = checkpoint, blue = module switch, green = completed, red = error. */
   --warn: #b45309;
   --warn-soft: #fdf3e3;
   --warn-line: #f0d5a8;
@@ -63,15 +58,12 @@ h3 {
   font-size: 0.95rem;
 }
 
-/* One visible focus style everywhere, rather than per-control. On a light theme
-   the browser default is nearly invisible against white surfaces. */
 :where(a, button, input, select, textarea):focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
-/* ---------------------------------------------------------------- chrome */
 
 .topbar {
   display: flex;
@@ -131,7 +123,6 @@ main {
   }
 }
 
-/* ---------------------------------------------------------------- controls */
 
 .row {
   display: flex;
@@ -233,7 +224,6 @@ button.danger:hover:not(:disabled) {
   color: var(--muted);
 }
 
-/* ---------------------------------------------------------------- notices */
 
 .notice {
   display: flex;
@@ -270,9 +260,6 @@ button.danger:hover:not(:disabled) {
   background: var(--accent-soft);
   color: #1d4ed8;
 }
-
-/* The API's own reason code, shown quietly next to the human sentence so the
-   backend's decision is legible rather than hidden behind friendly wording. */
 .notice-code {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 0.72rem;
@@ -314,8 +301,6 @@ button.danger:hover:not(:disabled) {
   align-items: center;
   margin-bottom: 0.6rem;
 }
-
-/* Small uppercase eyebrow: the module name is context, not the headline. */
 .eyebrow {
   font-size: 0.72rem;
   font-weight: 650;
@@ -386,7 +371,6 @@ button.danger:hover:not(:disabled) {
   gap: 0.65rem;
 }
 
-/* The radio-ish dot is decorative; it gives the row a consistent left edge. */
 .option-dot {
   flex: none;
   width: 15px;
@@ -438,8 +422,6 @@ button.danger:hover:not(:disabled) {
   font-size: 0.78rem;
 }
 
-/* ---------------------------------------------------------------- modules */
-
 .modules,
 .module-nav,
 .q-list,
@@ -486,8 +468,6 @@ button.danger:hover:not(:disabled) {
   margin: 0.7rem 0 0;
 }
 
-/* Admin sidebar nav: a grid so title / key / count line up down the column
-   instead of drifting with the length of each title. */
 .module-nav li + li {
   margin-top: 0.25rem;
 }
@@ -536,7 +516,6 @@ button.danger:hover:not(:disabled) {
   color: var(--accent);
 }
 
-/* ---------------------------------------------------------------- history */
 
 .panel {
   background: var(--surface);
@@ -553,7 +532,6 @@ button.danger:hover:not(:disabled) {
   gap: 0.5rem;
 }
 
-/* A continuous rail behind the nodes, so the history reads as one thread. */
 .history {
   position: relative;
   padding-left: 1.4rem;
@@ -589,8 +567,6 @@ button.danger:hover:not(:disabled) {
   border: 2px solid var(--line-strong);
 }
 
-/* Pre-checkpoint events stay fully visible - they are still history - but recede,
-   because they are no longer live context. That difference is the whole point. */
 .event.archived {
   opacity: 0.55;
 }
@@ -653,7 +629,6 @@ button.danger:hover:not(:disabled) {
   font-weight: 500;
 }
 
-/* ---------------------------------------------------------------- admin */
 
 .q-list {
   display: flex;

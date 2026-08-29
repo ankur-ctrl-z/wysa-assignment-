@@ -1,0 +1,740 @@
+:root {
+  /* Light product UI. Surfaces are white on a soft grey page, so cards read as
+     objects rather than as boxes drawn with borders. */
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #fafbfc;
+  --line: #e3e6ea;
+  --line-strong: #cbd2da;
+
+  --text: #16191f;
+  --text-2: #4a5260;
+  --muted: #79828f;
+
+  --accent: #2f6fed;
+  --accent-soft: #eaf1fe;
+  --accent-line: #b9d1fb;
+
+  /* Semantic colours that carry meaning in this app, not decoration:
+     amber = checkpoint, blue = module switch, green = completed, red = error. */
+  --warn: #b45309;
+  --warn-soft: #fdf3e3;
+  --warn-line: #f0d5a8;
+  --ok: #166534;
+  --ok-soft: #eaf6ed;
+  --ok-line: #b7dfc3;
+  --bad: #b42318;
+  --bad-soft: #fdedeb;
+  --bad-line: #f3c4bd;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-lift: 0 4px 14px rgba(16, 24, 40, 0.08);
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+h2,
+h3,
+h4 {
+  margin: 0 0 0.6rem;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 0.95rem;
+}
+
+/* One visible focus style everywhere, rather than per-control. On a light theme
+   the browser default is nearly invisible against white surfaces. */
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------------------------------------------------------------- chrome */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0.85rem 1.75rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar strong {
+  letter-spacing: -0.02em;
+}
+
+.topbar nav {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.topbar a {
+  color: var(--text-2);
+  text-decoration: none;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.topbar a:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.topbar a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+main {
+  padding: 1.75rem;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 940px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- controls */
+
+.row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0.85rem 0;
+}
+
+.row.space-between {
+  justify-content: space-between;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+input,
+select,
+textarea {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+  min-width: 0;
+}
+
+input::placeholder {
+  color: var(--muted);
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--muted);
+}
+
+textarea {
+  resize: vertical;
+  width: 100%;
+  line-height: 1.5;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.95rem;
+  font: inherit;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #2a63d4;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button.ghost {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--line-strong);
+  font-weight: 500;
+}
+
+button.ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--muted);
+}
+
+button.danger {
+  color: var(--bad);
+  border-color: var(--bad-line);
+  background: var(--surface);
+}
+
+button.danger:hover:not(:disabled) {
+  background: var(--bad-soft);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------- notices */
+
+.notice {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  border-radius: var(--radius);
+  padding: 0.7rem 0.9rem;
+  margin: 0.85rem 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 0.92rem;
+}
+
+.notice-icon {
+  flex: none;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.notice-warn {
+  border-color: var(--warn-line);
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.notice-ok {
+  border-color: var(--ok-line);
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.notice-info {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: #1d4ed8;
+}
+
+/* The API's own reason code, shown quietly next to the human sentence so the
+   backend's decision is legible rather than hidden behind friendly wording. */
+.notice-code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  opacity: 0.75;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0 0.4rem;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- question */
+
+.stepline {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.stepline .step {
+  font-weight: 650;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.card-head {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+/* Small uppercase eyebrow: the module name is context, not the headline. */
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--text-2);
+}
+
+.pill-checkpoint {
+  color: var(--warn);
+  background: var(--warn-soft);
+  border-color: var(--warn-line);
+}
+
+.question {
+  margin: 0 0 1.25rem;
+  font-size: 1.45rem;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
+}
+
+.option:hover:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lift);
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* The radio-ish dot is decorative; it gives the row a consistent left edge. */
+.option-dot {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-strong);
+}
+
+.option:hover:not(:disabled) .option-dot {
+  border-color: var(--accent);
+  border-width: 4px;
+}
+
+.option-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.tag {
+  font-size: 0.73rem;
+  font-weight: 500;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  white-space: nowrap;
+}
+
+.tag-switch {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+.tag-bad {
+  color: var(--bad);
+  background: var(--bad-soft);
+  border-color: var(--bad-line);
+}
+
+.qid {
+  margin: 1.1rem 0 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+/* ---------------------------------------------------------------- modules */
+
+.modules,
+.module-nav,
+.q-list,
+.option-list,
+.issues,
+.history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.modules {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.module {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.95rem;
+  box-shadow: var(--shadow);
+}
+
+.module.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.module-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.module-status {
+  font-size: 0.82rem;
+  margin-top: 0.15rem;
+}
+
+.module .row {
+  margin: 0.7rem 0 0;
+}
+
+/* Admin sidebar nav: a grid so title / key / count line up down the column
+   instead of drifting with the length of each title. */
+.module-nav li + li {
+  margin-top: 0.25rem;
+}
+
+.module-nav .nav {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15rem 0.6rem;
+  text-align: left;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid transparent;
+  font-weight: 500;
+  padding: 0.5rem 0.7rem;
+}
+
+.module-nav .nav:hover {
+  background: var(--surface-2);
+}
+
+.module-nav .nav.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.module-nav .nav-key {
+  grid-column: 1;
+  font-size: 0.76rem;
+  color: var(--muted);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.module-nav .nav-count {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-size: 0.76rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.module-nav .nav.active .nav-key,
+.module-nav .nav.active .nav-count {
+  color: var(--accent);
+}
+
+/* ---------------------------------------------------------------- history */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  box-shadow: var(--shadow);
+}
+
+.panel > h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+/* A continuous rail behind the nodes, so the history reads as one thread. */
+.history {
+  position: relative;
+  padding-left: 1.4rem;
+  max-height: 68vh;
+  overflow-y: auto;
+}
+
+.history::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--line);
+}
+
+.event {
+  position: relative;
+  padding: 0.35rem 0 0.6rem;
+  font-size: 0.87rem;
+}
+
+.event::before {
+  content: "";
+  position: absolute;
+  left: -1.4rem;
+  top: 0.65rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--line-strong);
+}
+
+/* Pre-checkpoint events stay fully visible - they are still history - but recede,
+   because they are no longer live context. That difference is the whole point. */
+.event.archived {
+  opacity: 0.55;
+}
+
+.event-checkpoint::before {
+  border-color: var(--warn);
+  background: var(--warn);
+}
+
+.event-module_switch::before {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.event-completed::before {
+  border-color: var(--ok);
+  background: var(--ok);
+}
+
+.event-back::before {
+  border-color: var(--muted);
+}
+
+.event-head {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.kind {
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.event-checkpoint .kind {
+  color: var(--warn);
+}
+
+.event-module_switch .kind {
+  color: var(--accent);
+}
+
+.event-completed .kind {
+  color: var(--ok);
+}
+
+.seq {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+}
+
+.event-text {
+  color: var(--text-2);
+}
+
+.event-answer {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------- admin */
+
+.q-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.q-card.entry {
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.q-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.q-head textarea {
+  flex: 1;
+}
+
+.q-flags {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: flex-start;
+  flex: none;
+  min-width: 8.5rem;
+}
+
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.75rem 0;
+}
+
+.option-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.option-row input {
+  flex: 1 1 11rem;
+}
+
+.option-row select {
+  flex: 2 1 15rem;
+}
+
+.validation {
+  margin-bottom: 1.1rem;
+}
+
+.issue {
+  padding: 0.28rem 0;
+  font-size: 0.88rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.issue-error {
+  color: var(--bad);
+}
+
+.issue-warning {
+  color: var(--warn);
+}
+
+.issue-info {
+  color: var(--muted);
+}
